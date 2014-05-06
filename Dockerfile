@@ -14,6 +14,7 @@ RUN apt-get install -y python-software-properties software-properties-common apt
 RUN echo "deb http://apt.postgresql.org/pub/repos/apt/ $(lsb_release --codename --short)-pgdg main" > /etc/apt/sources.list.d/pgdg.list
 RUN /usr/bin/wget --quiet -O - http://apt.postgresql.org/pub/repos/apt/ACCC4CF8.asc | apt-key add -
 RUN echo "deb https://oss-binaries.phusionpassenger.com/apt/passenger $(lsb_release --codename --short) main" > /etc/apt/sources.list.d/passenger.list
+RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 561F9B9CAC40B2F7
 RUN add-apt-repository -y ppa:nginx/stable
 RUN add-apt-repository -y ppa:ondrej/php5
 RUN apt-get update
@@ -26,8 +27,9 @@ RUN apt-get -y install postgresql-9.3 postgresql-contrib-9.3
 RUN apt-get -y install nginx-extras passenger
 
 # Configure nginx for Puppet
-ADD nginx_default.conf /etc/nginx/sites-available/default
-ADD nginx_puppetmaster.conf /etc/nginx/sites-available/puppetmaster
+ADD nginx_default.conf /etc/nginx/conf.d/default.conf
+ADD nginx_puppetmaster.conf /etc/nginx/conf.d/puppetmaster.conf
+ADD nginx.conf /etc/nginx/nginx.conf
 ADD start_postgres /usr/sbin/start_postgres
 RUN mkdir -p /etc/puppet/rack/public
 ADD config.ru /etc/puppet/rack/config.ru
