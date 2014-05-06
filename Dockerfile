@@ -7,10 +7,10 @@ MAINTAINER  Michael Dodwell "michael@dodwell.us"
 ENV LANG C.UTF-8
 
 # install curl, wget, git
-RUN DEBIAN_FRONTEND=noninteractive apt-get install -y curl wget git
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y -q curl wget git
 
 # Configure repos
-RUN DEBIAN_FRONTEND=noninteractive apt-get install -y python-software-properties software-properties-common apt-transport-https ca-certificates
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y -q python-software-properties software-properties-common apt-transport-https ca-certificates
 # Add PostgreSQL's repository. It contains the most recent stable release
 #     of PostgreSQL, ``9.3``.
 RUN echo "deb http://apt.postgresql.org/pub/repos/apt/ precise-pgdg main" > /etc/apt/sources.list.d/pgdg.list
@@ -21,10 +21,10 @@ RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 561F9B9CAC40B2F7
 # Add nginx repo
 RUN add-apt-repository -y ppa:nginx/stable
 RUN apt-get update
-RUN DEBIAN_FRONTEND=noninteractive apt-get install -y pgdg-keyring
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y -q pgdg-keyring
 
 # Install ruby 1.9.1a and setup
-RUN DEBIAN_FRONTEND=noninteractive apt-get install -y ruby ruby1.9.1 ruby1.9.1-dev ri1.9.1 build-essential libssl-dev zlib1g-dev
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y -q ruby ruby1.9.1 ruby1.9.1-dev ri1.9.1 build-essential libssl-dev zlib1g-dev
 RUN /usr/bin/update-alternatives --install /usr/bin/ruby ruby /usr/bin/ruby1.9.1 400 --slave /usr/share/man/man1/ruby.1.gz ruby.1.gz /usr/share/man/man1/ruby1.9.1.1.gz --slave /usr/bin/ri ri /usr/bin/ri1.9.1 --slave /usr/bin/irb irb /usr/bin/irb1.9.1 --slave /usr/bin/rdoc rdoc /usr/bin/rdoc1.9.1
 
 # Install PostgreSQL and setup
@@ -58,7 +58,7 @@ VOLUME  ["/etc/postgresql", "/var/log/postgresql", "/var/lib/postgresql"]
 USER root
 
 # Install nginx
-RUN DEBIAN_FRONTEND=noninteractive apt-get install -y nginx-extras ruby-passenger
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y -q nginx-extras ruby-passenger
 
 # expose port 80
 EXPOSE 80
@@ -70,7 +70,7 @@ ADD nginx.conf /etc/nginx/nginx.conf
 VOLUME  ["/etc/nginx", "/var/log/nginx"]
 
 # Configure puppet
-RUN apt-get -y -q install puppet
+RUN apt-get install -y -q puppet
 RUN rm -rf /etc/puppet
 RUN /usr/bin/git clone http://github.com/dodwmd/puppet-generic /etc/puppet
 RUN gem install librarian-puppet
@@ -82,8 +82,7 @@ VOLUME  ["/etc/puppet"]
 EXPOSE 8140
 
 # Supervisord
-RUN DEBIAN_FRONTEND=noninteractive apt-get install -y python-setuptools
-RUN easy_install supervisor
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y -q supervisor
 ADD supervisord.conf /etc/supervisord.conf
 
 CMD ["supervisord", "-n", "-c", "/etc/supervisord.conf"]
