@@ -63,6 +63,11 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get install -y -q nginx-extras ruby-passe
 # expose port 80
 EXPOSE 80
 
+# Install/Configure PuppetDB
+RUN apt-get install -y -q puppetdb
+RUN puppetdb ssl-setup -f
+ADD puppetdb_database.ini /etc/puppetdb/conf.d/database.ini
+
 # Configure nginx for Puppet
 ADD nginx_default.conf /etc/nginx/conf.d/default.conf
 ADD nginx_puppetmaster.conf /etc/nginx/conf.d/puppetmaster.conf
