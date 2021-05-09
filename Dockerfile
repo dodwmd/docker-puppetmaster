@@ -1,7 +1,7 @@
 # nginx + PHP5-FPM + MariaDB + supervisord on Docker
 #
 # VERSION               0.0.2
-FROM        ubuntu:14.04
+FROM        ubuntu:20.04
 MAINTAINER  Michael Dodwell "michael@dodwell.us"
 
 ENV LANG C.UTF-8
